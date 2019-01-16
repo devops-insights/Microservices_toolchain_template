@@ -1,0 +1,79 @@
+[
+  {
+    "name":"PRODUCTION Deployment Checks",
+    "description": "Composite Policy to check Unit Tests, Functional Tests, and Code Coverage.",
+    "rules":[
+      {
+        "name": "Unit Test Rule",
+        "description": "Unit Test Rule",
+        "format":"xunit",
+        "stage":"unittest",
+        "percentPass":100,
+        "regressionCheck":true,
+        "criticalTests":[
+
+        ]
+      },
+      {
+        "name": "Functional Test Rule",
+        "description": "Functional Test Rule",
+        "format":"xunit",
+        "stage":"fvt",
+        "percentPass":100,
+        "regressionCheck":true,
+        "criticalTests":[
+
+        ]
+      },
+      {
+        "name": "Code Coverage Rule",
+        "description": "Code Coverage Rule",
+        "format":"istanbul",
+        "stage":"code",
+        "codeCoverage":80,
+        "regressionCheck":true
+      }
+    ]
+  },
+  {
+    "name":"STAGING Deployment Checks",
+    "description": "Composite Policy to check Unit Tests and Code Coverage.",
+    "rules":[
+      {
+        "name": "Unit Test Rule",
+        "description": "Unit Test Rule",
+        "format":"xunit",
+        "stage":"unittest",
+        "percentPass":100,
+        "regressionCheck":true,
+        "criticalTests":[
+
+        ]
+      },
+      {
+        "name": "Code Coverage Rule",
+        "description": "Code Coverage Rule",
+        "format":"istanbul",
+        "stage":"code",
+        "codeCoverage":60
+      }
+    ]
+  },
+  {
+    "name":"PRODUCTION Deployment Checks (func test only)",
+    "description": "Composite Policy to check Functional Tests.",
+    "rules":[
+      {
+        "name": "Functional Test Rule",
+        "description": "Functional Test Rule",
+        "format":"xunit",
+        "stage":"fvt",
+        "percentPass":100,
+        "regressionCheck":true,
+        "criticalTests":[
+
+        ]
+      }
+    ]
+  }
+]

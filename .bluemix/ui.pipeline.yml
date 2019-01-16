@@ -1,0 +1,157 @@
+---
+stages:
+- name: BUILD
+  inputs:
+  - type: git
+    branch: master
+    service: ${UI_REPO}
+  triggers:
+  - type: commit
+  properties:
+  - name: LOGICAL_APP_NAME
+    value: ${CF_APP_NAME}
+    type: text
+  - name: BUILD_PREFIX
+    value: master
+    type: text
+  - name: IBM_CLOUD_API_KEY
+    value: ${INSIGHTS_API_KEY}
+    type: text
+  jobs:
+  - name: Build
+    type: builder
+    artifact_dir: ''
+    build_type: shell
+    script: |-
+      #!/bin/bash
+      export PATH=/opt/IBM/node-v4.2/bin:$PATH
+      npm install -g grunt-idra3
+
+      idra --publishbuildrecord --branch=$GIT_BRANCH --repositoryurl=$GIT_URL --commitid=$GIT_COMMIT --status="pass"
+- name: STAGING
+  inputs:
+  - type: job
+    stage: BUILD
+    job: Build
+  triggers:
+  - type: stage
+  properties:
+  - name: CF_APP_NAME
+    value: undefined
+    type: text
+  - name: APP_URL
+    value: undefined
+    type: text
+  - name: LOGICAL_APP_NAME
+    value: ${CF_APP_NAME}
+    type: text
+  - name: BUILD_PREFIX
+    value: master
+    type: text
+  - name: LOGICAL_ENV_NAME
+    value: STAGING
+    type: text
+  - name: IBM_CLOUD_API_KEY
+    value: ${INSIGHTS_API_KEY}
+    type: text
+  jobs:
+  - name: Deploy
+    type: deployer
+    target:
+      region_id: ${STAGING_REGION_ID}
+      organization: ${STAGING_ORG_NAME}
+      space: ${STAGING_SPACE_NAME}
+      application: ${CF_APP_NAME}
+      api_key: ${API_KEY}
+    script: |-
+      #!/bin/bash
+      export PATH=/opt/IBM/node-v4.2/bin:$PATH
+
+      # Push app
+      export CF_APP_NAME="staging-$CF_APP"
+      cf push "${CF_APP_NAME}"
+      push_result=$?
+      export APP_URL=http://$(cf app $CF_APP_NAME | grep -e urls: -e routes: | awk '{print $2}')      
+      # View logs
+      #cf logs "${CF_APP_NAME}" --recent
+
+      deploy_status="pass"
+      if [ $push_result -ne 0 ]; then
+         deploy_status="fail"
+      fi
+      npm install -g grunt-idra3
+      idra --publishdeployrecord  --env=$LOGICAL_ENV_NAME --status=$deploy_status --appurl=$APP_URL
+    enable_tests: false
+    test_file_pattern: ''
+- name: PRODUCTION
+  inputs:
+  - type: job
+    stage: BUILD
+    job: Build
+  triggers:
+  - type: stage
+  properties:
+  - name: CF_APP_NAME
+    value: undefined
+    type: text
+  - name: APP_URL
+    value: undefined
+    type: text
+  - name: BUILD_PREFIX
+    value: master
+    type: text
+  - name: LOGICAL_APP_NAME
+    value: ${CF_APP_NAME}
+    type: text
+  - name: LOGICAL_ENV_NAME
+    value: PRODUCTION
+    type: text
+  - name: IBM_CLOUD_API_KEY
+    value: ${INSIGHTS_API_KEY}
+    type: text
+  jobs:
+  - name: Production Gate
+    type: tester
+    extension_id: ibm.devops.services.pipeline.dra_devops_gate
+    CRITERIA: PRODUCTION Deployment Checks (func test only)
+  - name: Blue/Green Deploy
+    type: deployer
+    target:
+      region_id: ${PROD_REGION_ID}
+      organization: ${PROD_ORG_NAME}
+      space: ${PROD_SPACE_NAME}
+      application: ${CF_APP_NAME}
+      api_key: ${API_KEY}
+    script: |-
+      #!/bin/bash
+      export PATH=/opt/IBM/node-v4.2/bin:$PATH
+
+      if ! cf app $CF_APP; then
+        cf push $CF_APP
+      else
+        OLD_CF_APP=${CF_APP}-OLD-$(date +"%s")
+        rollback() {
+          set +e
+          if cf app $OLD_CF_APP; then
+            cf logs $CF_APP --recent
+            cf delete $CF_APP -f
+            cf rename $OLD_CF_APP $CF_APP
+          fi
+          exit 1
+        }
+        set -e
+        trap rollback ERR
+        cf rename $CF_APP $OLD_CF_APP
+        cf push $CF_APP
+        cf delete $OLD_CF_APP -f
+      fi
+
+      push_result=$?
+      export APP_URL=http://$(cf app $CF_APP_NAME | grep -e urls: -e routes: | awk '{print $2}')
+
+      deploy_status="pass"
+      if [ $push_result -ne 0 ]; then
+         deploy_status="fail"
+      fi
+      npm install -g grunt-idra3
+      idra --publishdeployrecord  --env=$LOGICAL_ENV_NAME --status=$deploy_status --appurl=$APP_URL
