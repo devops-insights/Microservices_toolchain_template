@@ -123,10 +123,7 @@ services:
       enable_traceability: true
   dra:
     service_id: draservicebroker
-    parameters:
-      criteria:
-        $text: doi.json
-    $refType: text
+    $ref: doi.yml
   webide:
     service_id: orion
 form:
