@@ -1,5 +1,4 @@
 {
-  "copy_data": true,
   "custom_datasets": [
     {
       "lifecycle_stage": "IVT",
@@ -12,7 +11,7 @@
       "label": "Smoke Test"
     }
   ],
-  "policy": [
+  "policies": [
     {
       "name":"PRODUCTION Deployment Checks",
       "description": "Composite Policy to check Unit Tests, Functional Tests, and Code Coverage.",
