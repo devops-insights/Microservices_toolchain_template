@@ -18,9 +18,9 @@ template:
     - dra
   info:
     git url: >-
-      [https://github.com/devops-insights/microservices-toolchain-template](https://github.com/devops-insights/microservices-toolchain-template)
+      [https://github.com/devops-insights/Microservices_toolchain_template](https://github.com/devops-insights/Microservices_toolchain_template)
     git branch: >-
-      [master](https://github.com/devops-insights/microservices-toolchain-template/tree/master)
+      [master](https://github.com/devops-insights/Microservices_toolchain_template/tree/master)
 toolchain:
   template:
     getting_started:
