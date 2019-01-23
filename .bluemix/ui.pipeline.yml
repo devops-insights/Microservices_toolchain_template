@@ -16,7 +16,7 @@ stages:
     type: text
   - name: IBM_CLOUD_API_KEY
     value: ${INSIGHTS_API_KEY}
-    type: text
+    type: secure
   jobs:
   - name: Build
     type: builder
@@ -53,7 +53,7 @@ stages:
     type: text
   - name: IBM_CLOUD_API_KEY
     value: ${INSIGHTS_API_KEY}
-    type: text
+    type: secure
   jobs:
   - name: Deploy
     type: deployer
@@ -108,7 +108,7 @@ stages:
     type: text
   - name: IBM_CLOUD_API_KEY
     value: ${INSIGHTS_API_KEY}
-    type: text
+    type: secure
   jobs:
   - name: Production Gate
     type: tester
