@@ -24,10 +24,37 @@ stages:
     build_type: shell
     script: |-
       #!/bin/bash
-      export PATH=/opt/IBM/node-v4.2/bin:$PATH
-      npm install -g grunt-idra3
+      export PATH=/opt/IBM/node-v6.7.0/bin:$PATH
+      npm install
 
       idra --publishbuildrecord --branch=$GIT_BRANCH --repositoryurl=$GIT_URL --commitid=$GIT_COMMIT --status="pass"
+  - name: Test
+    type: tester
+    script: |
+      #!/bin/bash
+      export PATH=/opt/IBM/node-v6.7.0/bin:$PATH
+      npm install grunt
+      npm install grunt-idra3
+
+      set +e
+      npm run unittest
+      npm_result=$?
+      if [ $npm_result -eq 0 ]; then
+        npm run coverage
+        npm_result=$?
+      fi
+      set -e
+
+      build_status="pass"
+      if [ $npm_result -ne 0 ]; then
+          build_status="fail"
+      fi
+
+      idra --publishbuildrecord --branch=$GIT_BRANCH --repositoryurl=$GIT_URL --commitid=$GIT_COMMIT --status=$build_status
+
+      ./node_modules/grunt-idra3/bin/runidra.js --publishtestresult --filelocation=./test/mocha-unittest.xml --type=unittest
+      ./node_modules/grunt-idra3/bin/runidra.js --publishtestresult --filelocation=./coverage/coverage-summary.json --type=code
+    test_type: simple
 - name: STAGING
   inputs:
   - type: job
@@ -71,7 +98,7 @@ stages:
       export CF_APP_NAME="staging-$CF_APP"
       cf push "${CF_APP_NAME}"
       push_result=$?
-      export APP_URL=http://$(cf app $CF_APP_NAME | grep -e urls: -e routes: | awk '{print $2}')      
+      export APP_URL=https://$(cf app $CF_APP_NAME | grep -e urls: -e routes: | awk '{print $2}')
       # View logs
       #cf logs "${CF_APP_NAME}" --recent
 
@@ -83,6 +110,19 @@ stages:
       idra --publishdeployrecord  --env=$LOGICAL_ENV_NAME --status=$deploy_status --appurl=$APP_URL
     enable_tests: false
     test_file_pattern: ''
+  - name: FVT
+    type: tester
+    script: |-
+      #!/bin/bash
+      export PATH=/opt/IBM/node-v6.7.0/bin:$PATH
+      npm install -g grunt-idra3
+      
+      sudo apt-get -y update
+      sudo apt-get -y install libnss3-dev
+
+      npm run fvt
+      idra --publishtestresult --filelocation=./test/fvt/*.xml --type=fvt
+    test_type: simple
 - name: PRODUCTION
   inputs:
   - type: job
@@ -113,7 +153,7 @@ stages:
   - name: Production Gate
     type: tester
     extension_id: ibm.devops.services.pipeline.dra_devops_gate
-    CRITERIA: PRODUCTION Deployment Checks (func test only)
+    CRITERIA: UI Production Policy
   - name: Blue/Green Deploy
     type: deployer
     target:
@@ -147,7 +187,7 @@ stages:
       fi
 
       push_result=$?
-      export APP_URL=http://$(cf app $CF_APP_NAME | grep -e urls: -e routes: | awk '{print $2}')
+      export APP_URL=https://$(cf app $CF_APP_NAME | grep -e urls: -e routes: | awk '{print $2}')
 
       deploy_status="pass"
       if [ $push_result -ne 0 ]; then

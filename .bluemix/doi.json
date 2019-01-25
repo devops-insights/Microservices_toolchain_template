@@ -1,7 +1,7 @@
 {
   "custom_datasets": [
     {
-      "lifecycle_stage": "IVT",
+      "lifecycle_stage": "integrationtest",
       "type_of_test": "test",
       "label": "Integration Test"
     },
@@ -13,8 +13,8 @@
   ],
   "policies": [
     {
-      "name":"PRODUCTION Deployment Checks",
-      "description": "Composite Policy to check Unit Tests, Functional Tests, and Code Coverage.",
+      "name":"Orders Production Policy",
+      "description": "Composite Policy to check Unit Test, Functional Test, Integration test and Code Coverage.",
       "rules":[
         {
           "name": "Unit Test Rule",
@@ -45,11 +45,22 @@
           "stage":"code",
           "codeCoverage":80,
           "regressionCheck":true
+        },
+        {
+          "name": "Integration Test Rule",
+          "description": "Integration Test Rule",
+          "format":"xunit",
+          "stage":"integrationtest",
+          "percentPass":100,
+          "regressionCheck":true,
+          "criticalTests":[
+
+          ]
         }
       ]
     },
     {
-      "name":"STAGING Deployment Checks",
+      "name":"Catalog Staging Policy",
       "description": "Composite Policy to check Unit Tests and Code Coverage.",
       "rules":[
         {
@@ -73,8 +84,8 @@
       ]
     },
     {
-      "name":"PRODUCTION Deployment Checks (func test only)",
-      "description": "Composite Policy to check Functional Tests.",
+      "name":"Catalog Production Policy",
+      "description": "Composite Policy to check FVT and Integration test.",
       "rules":[
         {
           "name": "Functional Test Rule",
@@ -86,6 +97,53 @@
           "criticalTests":[
 
           ]
+        },
+        {
+          "name": "Integration Test Rule",
+          "description": "Integration Test Rule",
+          "format":"xunit",
+          "stage":"integrationtest",
+          "percentPass":100,
+          "regressionCheck":true,
+          "criticalTests":[
+
+          ]
+        }
+      ]
+    },
+    {
+      "name":"UI Production Policy",
+      "description": "Composite Policy to check Functional Tests.",
+      "rules":[
+        {
+          "name": "Unit Test Rule",
+          "description": "Unit Test Rule",
+          "format":"xunit",
+          "stage":"unittest",
+          "percentPass":100,
+          "regressionCheck":true,
+          "criticalTests":[
+
+          ]
+        },
+        {
+          "name": "Functional Test Rule",
+          "description": "Functional Test Rule",
+          "format":"xunit",
+          "stage":"fvt",
+          "percentPass":100,
+          "regressionCheck":true,
+          "criticalTests":[
+
+          ]
+        },
+        {
+          "name": "Code Coverage Rule",
+          "description": "Code Coverage Rule",
+          "format":"istanbul",
+          "stage":"code",
+          "codeCoverage":80,
+          "regressionCheck":true
         }
       ]
     }
