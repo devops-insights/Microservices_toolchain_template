@@ -49,14 +49,14 @@
         {
           "name": "Integration Test Rule",
           "description": "Integration Test Rule",
-          "format":"xunit",
-          "stage":"integrationtest",
-          "percentPass":100,
-          "regressionCheck":true,
-          "criticalTests":[
-
-          ]
-        }
+          "format": "xunit",
+          "stage": "integrationtest",
+          "percentPass": 100,
+          "criticalTests": [],
+          "customStage": true,
+          "typeOfTest": "test",
+          "tag": "Integration Test Rule"
+      }
       ]
     },
     {
