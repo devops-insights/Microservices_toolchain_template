@@ -26,8 +26,6 @@ stages:
       #!/bin/bash
       export PATH=/opt/IBM/node-v6.7.0/bin:$PATH
       npm install
-
-      idra --publishbuildrecord --branch=$GIT_BRANCH --repositoryurl=$GIT_URL --commitid=$GIT_COMMIT --status="pass"
   - name: Test
     type: tester
     script: |
