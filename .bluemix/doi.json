@@ -43,7 +43,7 @@
           "description": "Code Coverage Rule",
           "format":"istanbul",
           "stage":"code",
-          "codeCoverage":80,
+          "codeCoverage":65,
           "regressionCheck":true
         },
         {
@@ -142,7 +142,7 @@
           "description": "Code Coverage Rule",
           "format":"istanbul",
           "stage":"code",
-          "codeCoverage":80,
+          "codeCoverage":40,
           "regressionCheck":true
         }
       ]

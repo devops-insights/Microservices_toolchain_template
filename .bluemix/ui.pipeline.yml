@@ -31,8 +31,9 @@ stages:
     script: |
       #!/bin/bash
       export PATH=/opt/IBM/node-v6.7.0/bin:$PATH
+      npm install
       npm install grunt
-      npm install grunt-idra3
+      npm install -g grunt-idra3
 
       set +e
       npm run unittest
