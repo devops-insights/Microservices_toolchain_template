@@ -90,10 +90,6 @@ stages:
     value: ${INSIGHTS_API_KEY}
     type: secure
   jobs:
-  - name: Staging Gate
-    type: tester
-    extension_id: ibm.devops.services.pipeline.dra_devops_gate
-    CRITERIA: Catalog Staging Policy
   - name: Deploy
     type: deployer
     target:

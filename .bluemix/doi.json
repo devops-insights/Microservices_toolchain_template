@@ -4,11 +4,6 @@
       "lifecycle_stage": "integrationtest",
       "type_of_test": "test",
       "label": "Integration Test"
-    },
-    {
-      "lifecycle_stage": "ST",
-      "type_of_test": "test",
-      "label": "Smoke Test"
     }
   ],
   "policies": [
@@ -60,30 +55,6 @@
       ]
     },
     {
-      "name":"Catalog Staging",
-      "description": "Composite Policy to check Unit Tests and Code Coverage.",
-      "rules":[
-        {
-          "name": "Unit Test Rule",
-          "description": "Unit Test Rule",
-          "format":"xunit",
-          "stage":"unittest",
-          "percentPass":100,
-          "regressionCheck":true,
-          "criticalTests":[
-
-          ]
-        },
-        {
-          "name": "Code Coverage Rule",
-          "description": "Code Coverage Rule",
-          "format":"istanbul",
-          "stage":"code",
-          "codeCoverage":60
-        }
-      ]
-    },
-    {
       "name":"Catalog Production",
       "description": "Composite Policy to check FVT and Integration test.",
       "rules":[
@@ -108,6 +79,24 @@
           "criticalTests":[
 
           ]
+        },
+        {
+          "name": "Unit Test Rule",
+          "description": "Unit Test Rule",
+          "format":"xunit",
+          "stage":"unittest",
+          "percentPass":100,
+          "regressionCheck":true,
+          "criticalTests":[
+
+          ]
+        },
+        {
+          "name": "Code Coverage Rule",
+          "description": "Code Coverage Rule",
+          "format":"istanbul",
+          "stage":"code",
+          "codeCoverage":60
         }
       ]
     },
