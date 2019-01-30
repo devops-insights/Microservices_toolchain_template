@@ -13,7 +13,7 @@
   ],
   "policies": [
     {
-      "name":"Orders Production Policy",
+      "name":"Orders Production",
       "description": "Composite Policy to check Unit Test, Functional Test, Integration test and Code Coverage.",
       "rules":[
         {
@@ -60,7 +60,7 @@
       ]
     },
     {
-      "name":"Catalog Staging Policy",
+      "name":"Catalog Staging",
       "description": "Composite Policy to check Unit Tests and Code Coverage.",
       "rules":[
         {
@@ -84,7 +84,7 @@
       ]
     },
     {
-      "name":"Catalog Production Policy",
+      "name":"Catalog Production",
       "description": "Composite Policy to check FVT and Integration test.",
       "rules":[
         {
@@ -112,7 +112,7 @@
       ]
     },
     {
-      "name":"UI Production Policy",
+      "name":"UI Production",
       "description": "Composite Policy to check Functional Tests.",
       "rules":[
         {
