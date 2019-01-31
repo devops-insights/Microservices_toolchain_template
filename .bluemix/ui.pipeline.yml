@@ -152,7 +152,7 @@ stages:
   - name: Production Gate
     type: tester
     extension_id: ibm.devops.services.pipeline.dra_devops_gate
-    CRITERIA: UI Production Policy
+    CRITERIA: UI Production
   - name: Blue/Green Deploy
     type: deployer
     target:
