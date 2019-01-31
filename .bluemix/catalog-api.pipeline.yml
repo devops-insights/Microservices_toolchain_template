@@ -206,7 +206,7 @@ stages:
   - name: Production Gate
     type: tester
     extension_id: ibm.devops.services.pipeline.dra_devops_gate
-    CRITERIA: Catalog Production Policy
+    CRITERIA: Catalog Production
   - name: Blue/Green Deploy
     type: deployer
     target:
