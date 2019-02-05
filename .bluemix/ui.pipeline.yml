@@ -51,8 +51,8 @@ stages:
 
       idra --publishbuildrecord --branch=$GIT_BRANCH --repositoryurl=$GIT_URL --commitid=$GIT_COMMIT --status=$build_status
 
-      ./node_modules/grunt-idra3/bin/runidra.js --publishtestresult --filelocation=./test/mocha-unittest.xml --type=unittest
-      ./node_modules/grunt-idra3/bin/runidra.js --publishtestresult --filelocation=./coverage/coverage-summary.json --type=code
+      idra --publishtestresult --filelocation=./test/mocha-unittest.xml --type=unittest
+      idra --publishtestresult --filelocation=./coverage/coverage-summary.json --type=code
     test_type: simple
 - name: STAGING
   inputs:
